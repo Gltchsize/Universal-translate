@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Studio — Deluxe</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #FF06B5;
+  --pink-dim: rgba(255,6,181,0.18);
+  --pink-glow: rgba(255,6,181,0.45);
+  --pink-border: rgba(255,6,181,0.35);
+  --cyan: #00F5FF;
+  --cyan-dim: rgba(0,245,255,0.12);
+  --cyan-border: rgba(0,245,255,0.3);
+  --bg: #060610;
+  --surface: rgba(10,8,24,0.88);
+  --surface2: rgba(20,14,40,0.7);
+  --border: rgba(255,255,255,0.06);
+  --text: #EDE8FF;
+  --muted: rgba(237,232,255,0.4);
+  --green: #00FF88;
+  --orange: #FF8800;
+  --radius: 4px;
+  --mono: 'Share Tech Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 80px;
+  overflow-x: hidden;
+}
+
+/* ── BG ── */
+.bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+.bg-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,6,181,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,6,181,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.bg-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 5%, rgba(255,6,181,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, rgba(0,245,255,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 70% 30%, rgba(255,6,181,0.05) 0%, transparent 45%);
+}
+.scan-line {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+}
+.corner {
+  position: fixed;
+  width: 60px; height: 60px;
+  border-color: var(--pink);
+  border-style: solid;
+  opacity: 0.3;
+  z-index: 10;
+}
+.corner-tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+.corner-tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+.corner-bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+.corner-br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+
+/* ── WRAPPER ── */
+.wrap {
+  position: relative; z-index: 5;
+  width: 100%; max-width: 960px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 24px;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 8px 0;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--pink-border);
+  background: var(--pink-dim);
+  border-radius: 2px;
+  padding: 4px 16px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 10px;
+}
+.badge .live-dot {
+  width: 6px; height: 6px;
+  background: var(--pink);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--pink);
+  animation: blink 1.4s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+header h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pink);
+  text-shadow: 0 0 30px var(--pink-glow), 0 0 60px rgba(255,6,181,0.2);
+  line-height: 1;
+}
+header h1 span { color: var(--cyan); text-shadow: 0 0 20px rgba(0,245,255,0.5); }
+header p {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 0;
+  border: 1px solid var(--pink-border);
+  background: var(--surface);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--pink-border);
+  color: var(--muted);
+  padding: 11px 28px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+  position: relative;
+}
+.tab-btn:last-child { border-right: none; }
+.tab-btn i { font-size: 0.75rem; }
+.tab-btn:hover { color: var(--pink); background: var(--pink-dim); }
+.tab-btn.active {
+  color: var(--bg);
+  background: var(--pink);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.4);
+}
+
+/* ── PANELS ── */
+.panel { width: 100%; display: none; }
+.panel.active {
+  display: block;
+  animation: slideIn 0.3s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes slideIn {
+  from { opacity:0; transform: translateY(12px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── GLASS CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--pink-border);
+  border-radius: var(--radius);
+  padding: 2rem 2.2rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent);
+}
+.card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pink-border), transparent);
+}
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--pink);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.section-title::before {
+  content: '//';
+  color: var(--muted);
+  font-family: var(--mono);
+}
+.section-title.cyan { color: var(--cyan); }
+.section-title.cyan::before { color: var(--muted); }
+
+/* ── FORM ── */
+label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+textarea, select, input[type="text"] {
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,6,181,0.2);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 10px 13px;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  resize: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+textarea:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 0 2px var(--pink-dim), 0 0 16px rgba(255,6,181,0.1);
+}
+select:focus { outline: none; border-color: var(--pink); }
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FF06B5' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+.input-group { position: relative; margin-bottom: 14px; }
+
+/* ── COPY BUTTON ── */
+.copy-btn {
+  position: absolute; right: 8px; bottom: 8px;
+  background: var(--pink);
+  color: #000;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0; pointer-events: none;
+  transform: translateY(3px);
+}
+.copy-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.copy-btn:hover { background: #fff; box-shadow: 0 0 12px var(--pink-glow); }
+.copy-btn.ok { background: var(--green); color: #000; }
+
+/* ── GRID ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── DIVIDER ── */
+.div {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pink-border), transparent);
+  margin: 20px 0;
+}
+
+/* ── STATUS BAR ── */
+.status-bar {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+  min-height: 16px;
+}
+.status-bar.ok { color: var(--green); }
+.status-bar.err { color: #ff4466; }
+.status-bar.info { color: var(--pink); }
+
+/* ── OUTPUT FIELDS ── */
+.out-field {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,6,181,0.15);
+  border-left: 3px solid var(--pink);
+  border-radius: var(--radius);
+  color: var(--pink);
+  padding: 10px 13px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  min-height: 50px;
+  word-break: break-all;
+  white-space: pre-wrap;
+  position: relative;
+}
+.out-field.cyan-out {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+}
+.out-field.green-out {
+  color: var(--green);
+  border-left-color: var(--green);
+}
+
+/* ── MODE TOGGLES ── */
+.mode-group {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.mode-btn {
+  background: transparent;
+  border: 1px solid var(--pink-border);
+  color: var(--muted);
+  padding: 5px 14px;
+  border-radius: 2px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn:hover { color: var(--pink); border-color: var(--pink); }
+.mode-btn.active { background: var(--pink); color: #000; border-color: var(--pink); }
+
+/* ── MINECRAFT ── */
+.ench-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 40px;
+  gap: 8px;
+  margin-bottom: 8px;
+  animation: slideIn 0.25s ease both;
+}
+.remove-btn {
+  background: rgba(255,50,50,0.1);
+  border: 1px solid rgba(255,50,50,0.3);
+  color: #ff4466;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.remove-btn:hover { background: rgba(255,50,50,0.25); }
+
+.add-ench-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--pink-border);
+  color: var(--pink);
+  padding: 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 6px 0 20px;
+}
+.add-ench-btn:hover { background: var(--pink-dim); border-style: solid; }
+
+#mcCmd {
+  color: var(--cyan);
+  border-left: 3px solid var(--cyan);
+  height: 80px;
+  background: rgba(0,0,20,0.7);
+}
+.mc-copy {
+  background: var(--cyan) !important;
+  color: #000 !important;
+}
+
+.mc-link {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+}
+.mc-link:hover { color: var(--cyan); }
+.mc-link img { width: 22px; border-radius: 4px; filter: grayscale(0.6); }
+
+/* ── DISCORD ── */
+.discord {
+  position: fixed; top: 16px; left: 16px;
+  background: rgba(114,137,218,0.12);
+  border: 1px solid rgba(114,137,218,0.25);
+  width: 38px; height: 38px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  color: #7289da;
+  font-size: 1rem;
+  z-index: 1000;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+.discord:hover { border-color: #7289da; box-shadow: 0 0 16px rgba(114,137,218,0.3); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--pink-border); border-radius: 2px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .g2, .g3 { grid-template-columns: 1fr; }
+  .card { padding: 1.4rem 1.2rem; }
+  .tabs { flex-wrap: wrap; }
+  .tab-btn { font-size: 0.8rem; padding: 9px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-lines"></div>
+  <div class="bg-glow"></div>
+  <div class="scan-line"></div>
+</div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<a href="https://discord.gg/48CGhPcBKj" target="_blank" class="discord" title="Discord">
+  <i class="fab fa-discord"></i>
+</a>
+
+<div class="wrap">
+
+  <header>
+    <div class="badge"><span class="live-dot"></span> Universal Studio</div>
+    <h1>DELUXE <span>EDITION</span></h1>
+    <p>// Traducteur · Encrypteur · Minecraft Lab //</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('t-translate',this)">
+      <i class="fas fa-language"></i> Traducteur
+    </button>
+    <button class="tab-btn" onclick="showTab('t-encrypt',this)">
+      <i class="fas fa-lock"></i> Encrypteur
+    </button>
+    <button class="tab-btn" onclick="showTab('t-mc',this)">
+      <i class="fas fa-cubes"></i> Minecraft
+    </button>
+  </div>
+
+  <!-- ══════════ TRADUCTEUR ══════════ -->
+  <div id="t-translate" class="panel active">
+    <div class="card">
+      <div class="section-title">Traducteur Universel</div>
+
+      <div class="input-group">
+        <label>Texte source</label>
+        <textarea id="srcText" rows="3" placeholder="Écrivez ici..." oninput="translateAll()"></textarea>
+      </div>
+
+      <div class="div"></div>
+
+      <!-- MORSE -->
+      <div class="g2" style="margin-bottom:14px">
+        <div>
+          <div class="section-title" style="font-size:0.6rem;margin-bottom:8px">Morse ↔</div>
+          <div class="input-group">
+            <textarea id="morseOut" rows="3" placeholder="... --- ..." oninput="fromMorse(this.value)"></textarea>
+            <button class="copy-btn" id="cp-morse" onclick="copyField('morseOut','cp-morse')">Copier</button>
+          </div>
+        </div>
+        <div>
+          <div class="section-title" style="font-size:0.6rem;margin-bottom:8px">Binaire ↔</div>
+          <div class="input-group">
+            <textarea id="binOut" rows="3" placeholder="01001000..." oninput="fromBin(this.value)"></textarea>
+            <button class="copy-btn" id="cp-bin" onclick="copyField('binOut','cp-bin')">Copier</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROT13 + HEX -->
+      <div class="g2" style="margin-bottom:14px">
+        <div>
+          <div class="section-title" style="font-size:0.6rem;margin-bottom:8px">ROT-13</div>
+          <div class="input-group">
+            <div class="out-field" id="rot13Out">—</div>
+            <button class="copy-btn show" id="cp-rot13" onclick="copyDiv('rot13Out','cp-rot13')">Copier</button>
+          </div>
+        </div>
+        <div>
+          <div class="section-title" style="font-size:0.6rem;margin-bottom:8px">Hexadécimal</div>
+          <div class="input-group">
+            <div class="out-field cyan-out" id="hexOut">—</div>
+            <button class="copy-btn show" id="cp-hex" onclick="copyDiv('hexOut','cp-hex')">Copier</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="div"></div>
+
+      <!-- LANGUE -->
+      <div class="section-title" style="font-size:0.6rem;margin-bottom:12px">Traduction de langue (via API)</div>
+      <div class="g2">
+        <div class="input-group">
+          <label>Langue cible</label>
+          <select id="langTarget" onchange="translateLang()">
+            <option value="en">🇬🇧 Anglais</option>
+            <option value="es">🇪🇸 Espagnol</option>
+            <option value="de">🇩🇪 Allemand</option>
+            <option value="it">🇮🇹 Italien</option>
+            <option value="pt">🇵🇹 Portugais</option>
+            <option value="ru">🇷🇺 Russe</option>
+            <option value="ja">🇯🇵 Japonais</option>
+            <option value="zh">🇨🇳 Chinois</option>
+            <option value="ar">🇸🇦 Arabe</option>
+            <option value="ko">🇰🇷 Coréen</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Résultat</label>
+          <div class="out-field green-out" id="langOut">—</div>
+          <button class="copy-btn show" id="cp-lang" onclick="copyDiv('langOut','cp-lang')">Copier</button>
+        </div>
+      </div>
+      <div class="status-bar" id="langStatus">Prêt — entrez du texte ci-dessus</div>
+    </div>
+  </div>
+
+  <!-- ══════════ ENCRYPTEUR ══════════ -->
+  <div id="t-encrypt" class="panel">
+    <div class="card">
+      <div class="section-title">Encrypteur / Décrypteur</div>
+
+      <div class="input-group">
+        <label>Texte d'entrée</label>
+        <textarea id="encInput" rows="3" placeholder="Entrez le texte à encoder/décoder..." oninput="runEnc()"></textarea>
+      </div>
+
+      <div class="mode-group" id="encModes">
+        <button class="mode-btn active" data-mode="base64" onclick="setEncMode(this)">Base64</button>
+        <button class="mode-btn" data-mode="base64d" onclick="setEncMode(this)">Base64 Décode</button>
+        <button class="mode-btn" data-mode="cesar" onclick="setEncMode(this)">César</button>
+        <button class="mode-btn" data-mode="atbash" onclick="setEncMode(this)">Atbash</button>
+        <button class="mode-btn" data-mode="xor" onclick="setEncMode(this)">XOR</button>
+        <button class="mode-btn" data-mode="url" onclick="setEncMode(this)">URL</button>
+        <button class="mode-btn" data-mode="urld" onclick="setEncMode(this)">URL Décode</button>
+        <button class="mode-btn" data-mode="html" onclick="setEncMode(this)">HTML Escape</button>
+        <button class="mode-btn" data-mode="rev" onclick="setEncMode(this)">Inverser</button>
+        <button class="mode-btn" data-mode="sha256" onclick="setEncMode(this)">SHA-256</button>
+      </div>
+
+      <!-- Options selon mode -->
+      <div id="cesarOpts" style="display:none;margin-bottom:12px">
+        <label>Décalage César (1–25)</label>
+        <input type="number" id="cesarShift" value="13" min="1" max="25" style="width:120px" oninput="runEnc()">
+      </div>
+      <div id="xorOpts" style="display:none;margin-bottom:12px">
+        <label>Clé XOR</label>
+        <input type="text" id="xorKey" value="secret" style="width:220px" oninput="runEnc()">
+      </div>
+
+      <div class="div"></div>
+
+      <div class="section-title" style="font-size:0.6rem;margin-bottom:10px">Résultat</div>
+      <div class="input-group">
+        <div class="out-field" id="encOutput" style="min-height:70px">—</div>
+        <button class="copy-btn show" id="cp-enc" onclick="copyDiv('encOutput','cp-enc')">Copier</button>
+      </div>
+      <div class="status-bar" id="encStatus">Sélectionnez un mode et entrez du texte</div>
+
+      <div class="div"></div>
+
+      <!-- SHA-256 VÉRIFICATEUR -->
+      <div class="section-title" style="font-size:0.6rem;margin-bottom:10px">Vérificateur SHA-256</div>
+      <div class="g2">
+        <div class="input-group">
+          <label>Hash attendu</label>
+          <input type="text" id="hashExpected" placeholder="abc123..." oninput="verifyHash()">
+        </div>
+        <div>
+          <label>Résultat</label>
+          <div class="status-bar" id="hashVerify" style="padding:10px 0;font-size:0.75rem">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ MINECRAFT ══════════ -->
+  <div id="t-mc" class="panel">
+    <div class="card">
+      <div class="section-title cyan">Générateur d'Objets Minecraft</div>
+
+      <div class="g2">
+        <div class="input-group">
+          <label>ID de l'objet</label>
+          <input type="text" id="mcId" value="diamond_sword" oninput="updateCmd()">
+        </div>
+        <div class="input-group">
+          <label>Version</label>
+          <select id="mcVer" onchange="updateCmd()">
+            <option value="v20">1.20.5+</option>
+            <option value="v13">1.13 — 1.20.4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Options</label>
+        <select id="mcUnbr" onchange="updateCmd()">
+          <option value="0">Standard</option>
+          <option value="1">Incassable</option>
+        </select>
+      </div>
+
+      <div class="div"></div>
+
+      <label>Enchantements</label>
+      <div id="enchContainer" style="margin-top:10px"></div>
+      <button class="add-ench-btn" onclick="addEnch()">
+        <i class="fas fa-plus"></i> Ajouter un enchantement
+      </button>
+
+      <div class="div"></div>
+
+      <div class="input-group">
+        <label>Commande finale</label>
+        <textarea id="mcCmd" readonly rows="3"></textarea>
+        <button class="copy-btn mc-copy show" id="cp-mc" onclick="copyField('mcCmd','cp-mc')">Copier</button>
+      </div>
+
+      <a href="https://minecraft.tools/fr/" target="_blank" class="mc-link">
+        <img src="https://minecraft.tools/favicon.ico" alt="">
+        <span>Accéder à Minecraft.tools</span>
+        <i class="fas fa-external-link-alt" style="font-size:0.6rem;opacity:0.5"></i>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ══════ TABS ══════ */
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ══════ COPY ══════ */
+function copyField(id, btnId) {
+  const val = document.getElementById(id).value;
+  doCopy(val, btnId);
+}
+function copyDiv(id, btnId) {
+  const val = document.getElementById(id).textContent;
+  if (val === '—' || !val.trim()) return;
+  doCopy(val, btnId);
+}
+function doCopy(val, btnId) {
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = document.getElementById(btnId);
+    const orig = btn.textContent;
+    btn.textContent = '✓ OK';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 1800);
+  });
+}
+
+/* ══════ SMART COPY VISIBILITY ══════ */
+document.querySelectorAll('textarea').forEach(ta => {
+  ta.addEventListener('input', () => {
+    const btn = ta.parentElement.querySelector('.copy-btn');
+    if (btn) {
+      if (ta.value.trim()) btn.classList.add('show');
+      else btn.classList.remove('show');
+    }
+  });
+});
+
+/* ══════ MORSE TABLES ══════ */
+const MORSE_TO_CHAR = {
+  '.-':'A','-...':'B','-.-.':'C','-..':'D','.':'E','..-.':'F','--.':'G',
+  '....':'H','..':'I','.---':'J','-.-':'K','.-..':'L','--':'M','-.':'N',
+  '---':'O','.--.':'P','--.-':'Q','.-.':'R','...':'S','-':'T','..-':'U',
+  '...-':'V','.--':'W','-..-':'X','-.--':'Y','--..':'Z',
+  '-----':'0','.----':'1','..---':'2','...--':'3','....-':'4',
+  '.....':'5','-....':'6','--...':'7','---..':'8','----.':'9',
+  '.-.-.-':'.','--..--':',','..--..':'?','-....-':'-','-.-.--':'!',
+  '.-..-.':'"','---...':':','-.-.-.':';','-.--.-':'(','-.--.-':')',
+  '...-..-':'$','.-.-.':'+'
+};
+const CHAR_TO_MORSE = {};
+Object.entries(MORSE_TO_CHAR).forEach(([k,v]) => { CHAR_TO_MORSE[v] = k; });
+CHAR_TO_MORSE[' '] = '/';
+
+function textToMorse(txt) {
+  return txt.toUpperCase().split('').map(c => {
+    if (c === ' ') return '/';
+    return CHAR_TO_MORSE[c] || '';
+  }).filter(x => x !== undefined).join(' ');
+}
+
+function morseToText(morse) {
+  return morse.trim().split(' / ').map(word =>
+    word.trim().split(' ').map(code => MORSE_TO_CHAR[code] || '?').join('')
+  ).join(' ');
+}
+
+function textToBin(txt) {
+  return txt.split('').map(c => c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+}
+function binToText(bin) {
+  return bin.trim().split(' ').map(b => {
+    const code = parseInt(b, 2);
+    return isNaN(code) ? '?' : String.fromCharCode(code);
+  }).join('');
+}
+function textToHex(txt) {
+  return txt.split('').map(c => c.charCodeAt(0).toString(16).padStart(2,'0').toUpperCase()).join(' ');
+}
+function rot13(txt) {
+  return txt.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    return String.fromCharCode((c.charCodeAt(0) - base + 13) % 26 + base);
+  });
+}
+
+let _translating = false;
+
+function translateAll() {
+  if (_translating) return;
+  const src = document.getElementById('srcText').value;
+
+  // Morse
+  const morse = textToMorse(src);
+  setTA('morseOut', morse);
+
+  // Binaire
+  const bin = textToBin(src);
+  setTA('binOut', bin);
+
+  // ROT13
+  document.getElementById('rot13Out').textContent = src ? rot13(src) : '—';
+
+  // HEX
+  document.getElementById('hexOut').textContent = src ? textToHex(src) : '—';
+
+  // Langue
+  translateLang();
+}
+
+function setTA(id, val) {
+  const el = document.getElementById(id);
+  el.value = val;
+  const btn = el.parentElement.querySelector('.copy-btn');
+  if (btn) { if (val.trim()) btn.classList.add('show'); else btn.classList.remove('show'); }
+}
+
+function fromMorse(val) {
+  if (_translating) return; _translating = true;
+  const txt = morseToText(val);
+  document.getElementById('srcText').value = txt;
+  document.getElementById('binOut').value = textToBin(txt);
+  document.getElementById('rot13Out').textContent = rot13(txt);
+  document.getElementById('hexOut').textContent = textToHex(txt);
+  _translating = false;
+}
+
+function fromBin(val) {
+  if (_translating) return; _translating = true;
+  const txt = binToText(val);
+  document.getElementById('srcText').value = txt;
+  document.getElementById('morseOut').value = textToMorse(txt);
+  document.getElementById('rot13Out').textContent = rot13(txt);
+  document.getElementById('hexOut').textContent = textToHex(txt);
+  _translating = false;
+}
+
+/* ══════ LANG TRANSLATION ══════ */
+let langTimer = null;
+function translateLang() {
+  clearTimeout(langTimer);
+  const src = document.getElementById('srcText').value.trim();
+  if (!src) { document.getElementById('langOut').textContent = '—'; return; }
+  const target = document.getElementById('langTarget').value;
+  document.getElementById('langStatus').textContent = '⟳ Traduction en cours...';
+  document.getElementById('langStatus').className = 'status-bar info';
+  langTimer = setTimeout(() => doTranslate(src, target), 600);
+}
+
+async function doTranslate(text, target) {
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=fr|${target}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.responseStatus === 200) {
+      document.getElementById('langOut').textContent = data.responseData.translatedText;
+      document.getElementById('langStatus').textContent = `✓ Traduit vers ${target.toUpperCase()} — MyMemory API`;
+      document.getElementById('langStatus').className = 'status-bar ok';
+    } else {
+      throw new Error(data.responseDetails || 'Erreur API');
+    }
+  } catch(e) {
+    document.getElementById('langOut').textContent = '— Erreur de traduction —';
+    document.getElementById('langStatus').textContent = `✗ ${e.message}`;
+    document.getElementById('langStatus').className = 'status-bar err';
+  }
+}
+
+/* ══════ ENCRYPTEUR ══════ */
+let encMode = 'base64';
+let currentHash = '';
+
+function setEncMode(btn) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  encMode = btn.dataset.mode;
+  document.getElementById('cesarOpts').style.display = encMode === 'cesar' ? 'block' : 'none';
+  document.getElementById('xorOpts').style.display = encMode === 'xor' ? 'block' : 'none';
+  runEnc();
+}
+
+async function runEnc() {
+  const input = document.getElementById('encInput').value;
+  const out = document.getElementById('encOutput');
+  const status = document.getElementById('encStatus');
+
+  if (!input) { out.textContent = '—'; status.textContent = 'Entrez du texte'; status.className = 'status-bar'; return; }
+
+  try {
+    let result = '';
+    switch(encMode) {
+      case 'base64':
+        result = btoa(unescape(encodeURIComponent(input)));
+        status.textContent = `✓ Base64 encodé — ${result.length} caractères`; break;
+      case 'base64d':
+        try { result = decodeURIComponent(escape(atob(input))); status.textContent = '✓ Base64 décodé'; }
+        catch(e) { result = '✗ Entrée Base64 invalide'; }
+        break;
+      case 'cesar': {
+        const shift = parseInt(document.getElementById('cesarShift').value) || 13;
+        result = input.replace(/[a-zA-Z]/g, c => {
+          const base = c <= 'Z' ? 65 : 97;
+          return String.fromCharCode((c.charCodeAt(0) - base + shift) % 26 + base);
+        });
+        status.textContent = `✓ César avec décalage ${shift}`; break; }
+      case 'atbash':
+        result = input.replace(/[a-zA-Z]/g, c => {
+          const base = c <= 'Z' ? 65 : 97;
+          return String.fromCharCode(base + 25 - (c.charCodeAt(0) - base));
+        });
+        status.textContent = '✓ Atbash appliqué'; break;
+      case 'xor': {
+        const key = document.getElementById('xorKey').value || 'key';
+        result = input.split('').map((c,i) =>
+          String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))
+        ).join('');
+        result = btoa(unescape(encodeURIComponent(result)));
+        status.textContent = `✓ XOR avec clé "${key}" (résultat en Base64)`; break; }
+      case 'url':
+        result = encodeURIComponent(input);
+        status.textContent = '✓ URL encodé'; break;
+      case 'urld':
+        try { result = decodeURIComponent(input); status.textContent = '✓ URL décodé'; }
+        catch(e) { result = '✗ Séquence URL invalide'; }
+        break;
+      case 'html':
+        result = input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                      .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+        status.textContent = '✓ HTML échappé'; break;
+      case 'rev':
+        result = input.split('').reverse().join('');
+        status.textContent = '✓ Texte inversé'; break;
+      case 'sha256':
+        result = await sha256(input);
+        currentHash = result;
+        status.textContent = `✓ SHA-256 — 64 caractères hex`; break;
+    }
+    out.textContent = result;
+    status.className = result.startsWith('✗') ? 'status-bar err' : 'status-bar ok';
+    verifyHash();
+  } catch(e) {
+    out.textContent = '✗ Erreur: ' + e.message;
+    status.textContent = '✗ Erreur'; status.className = 'status-bar err';
+  }
+}
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function verifyHash() {
+  const expected = document.getElementById('hashExpected').value.trim().toLowerCase();
+  const el = document.getElementById('hashVerify');
+  if (!expected || !currentHash) { el.textContent = '—'; el.className = 'status-bar'; return; }
+  if (currentHash === expected) {
+    el.textContent = '✓ Hashes identiques — correspondance !';
+    el.className = 'status-bar ok';
+  } else {
+    el.textContent = '✗ Hashes différents — ne correspondent pas';
+    el.className = 'status-bar err';
+  }
+}
+
+/* ══════ MINECRAFT ══════ */
+function addEnch() {
+  const c = document.getElementById('enchContainer');
+  const row = document.createElement('div');
+  row.className = 'ench-row';
+  row.innerHTML = `
+    <input type="text" placeholder="minecraft:sharpness" oninput="updateCmd()">
+    <input type="number" placeholder="Niv." min="1" max="255" value="1" oninput="updateCmd()">
+    <button class="remove-btn" onclick="this.closest('.ench-row').remove();updateCmd()">
+      <i class="fas fa-times"></i>
+    </button>`;
+  c.appendChild(row);
+  updateCmd();
+}
+
+function updateCmd() {
+  const id = document.getElementById('mcId').value.trim() || 'diamond_sword';
+  const ver = document.getElementById('mcVer').value;
+  const unbr = document.getElementById('mcUnbr').value === '1';
+  const rows = document.querySelectorAll('.ench-row');
+  let enchList = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const enchId = inputs[0].value.trim();
+    const lvl = parseInt(inputs[1].value) || 1;
+    if (enchId) enchList.push({ id: enchId, lvl });
+  });
+
+  let cmd = '';
+  if (ver === 'v20') {
+    let comp = [];
+    if (unbr) comp.push('unbreakable={}');
+    if (enchList.length) {
+      const e = enchList.map(e => `"${e.id}"=${e.lvl}`).join(',');
+      comp.push(`enchantments={levels:{${e}}}`);
+    }
+    cmd = `/give @p ${id}${comp.length ? '['+comp.join(',')+']' : ''} 1`;
+  } else {
+    let nbt = [];
+    if (unbr) nbt.push('Unbreakable:1');
+    if (enchList.length) {
+      const e = enchList.map(e => `{id:"${e.id}",lvl:${e.lvl}s}`).join(',');
+      nbt.push(`Enchantments:[${e}]`);
+    }
+    cmd = `/give @p ${id}${nbt.length ? '{'+nbt.join(',')+'} ' : ' '}1`;
+  }
+  document.getElementById('mcCmd').value = cmd;
+}
+
+updateCmd();
+
+/* Init */
+document.getElementById('srcText').addEventListener('input', () => {
+  const btn = document.getElementById('srcText').parentElement.querySelector('.copy-btn');
+});
+</script>
+</body>
+</html>
